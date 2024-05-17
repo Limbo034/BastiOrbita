@@ -1,102 +1,102 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Scripts.GameGeneral.ScoreGeneral.Score;
+using UnityEngine.SocialPlatforms.Impl;
+using TMPro;
 
 namespace Scripts.GameTwo.PlayerBall
 {
     public class ColorBall : MonoBehaviour
     {
-        public static int health = 3;
-        public static int score = 0;
+        public bool health = true;
+        private new Renderer renderer;
+        public bool deadPlayer = false;
+
+        public int levelScore = 0;
+        public int score;
+
+        [SerializeField] private TMP_Text levelScoreText;
+        [SerializeField] private TMP_Text owerScoreText;
+        private void Start()
+        {
+            renderer = GetComponent<Renderer>();
+            score = PlayerPrefs.GetInt("Score", score);
+        }
+        void Update()
+        {
+            levelScoreText.text = levelScore.ToString();
+            owerScoreText.text = levelScore.ToString();
+        }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("BonusGreen") || other.CompareTag("BonusRed") || other.CompareTag("BonusBlue"))
             {
-                Renderer renderer = GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    if (other.CompareTag("BonusGreen") && renderer.material.color != Color.green)
-                    {
-                        renderer.material.color = Color.green;
-                        health++;
-                    }
-                    else if (other.CompareTag("BonusRed") && renderer.material.color != Color.red)
-                    {
-                        renderer.material.color = Color.red;
-                        health++;
-                    }
-                    else if (other.CompareTag("BonusBlue") && renderer.material.color != Color.blue)
-                    {
-                        renderer.material.color = Color.blue;
-                        health++;
-                    }
-                    else
-                    {
-                        health--;
-                    }
-                    Debug.Log(health);
-                    Destroy(other.gameObject);
-                }
+                HandleBonusCollision(other);
             }
             else if (other.CompareTag("EnemyGreen") || other.CompareTag("EnemyRed") || other.CompareTag("EnemyBlue"))
             {
-                Renderer renderer = GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    if (other.CompareTag("EnemyGreen") && renderer.material.color != Color.green)
-                    {
-                        if (health <= 0)
-                        {
-                            PlayerPrefs.SetInt("Score", score);
-                            SceneManager.LoadScene(2);
-                            Debug.Log(health);
-                        }
-                        else
-                        {
-                            health--;
-                            Debug.Log(health);
-                        }
-                        Destroy(other.gameObject);
-                    }
-                    else if (other.CompareTag("EnemyRed") && renderer.material.color != Color.red)
-                    {
-                        if (health <= 0)
-                        {
-                            PlayerPrefs.SetInt("Score", score);
-                            SceneManager.LoadScene(2);
-                            Debug.Log(health);
-                        }
-                        else
-                        {
-                            health--;
-                            Debug.Log(health);
-                        }
-                        Destroy(other.gameObject);
-                    }
-                    else if (other.CompareTag("EnemyBlue") && renderer.material.color != Color.blue)
-                    {
-                        if (health <= 0)
-                        {
-                            PlayerPrefs.SetInt("Score", score);
-                            SceneManager.LoadScene(2);
-                            Debug.Log(health);
-                        }
-                        else
-                        {
-                            health--;
-                            Debug.Log(health);
-                        }
-                        Destroy(other.gameObject);
-                    }
+                HandleEnemyCollision(other);
+            }
+        }
 
-                    else if (renderer.material.color == Color.green || renderer.material.color == Color.red || renderer.material.color == Color.blue)
+        private void HandleBonusCollision(Collider2D other)
+        {
+            Color bonusColor = Color.clear;
+
+            if (other.CompareTag("BonusGreen"))
+            {
+                bonusColor = Color.green;
+            }
+            else if (other.CompareTag("BonusRed"))
+            {
+                bonusColor = Color.red;
+            }
+            else if (other.CompareTag("BonusBlue"))
+            {
+                bonusColor = Color.blue;
+            }
+
+            renderer.material.color = bonusColor;
+            Destroy(other.gameObject);
+        }
+
+        private void HandleEnemyCollision(Collider2D other)
+        {
+            if (health == true)
+            {
+                if ((other.CompareTag("EnemyBlue") && renderer.material.color != Color.blue) ||
+                    (other.CompareTag("EnemyRed") && renderer.material.color != Color.red) ||
+                    (other.CompareTag("EnemyGreen") && renderer.material.color != Color.green))
+                {
+                    health = false;
+                    Debug.Log("Health: " + health);
+                    Destroy(other.gameObject);
+
+                    if (!health)
                     {
-                        score++;
-                        Debug.Log("score" + score);
-                        Destroy(other.gameObject);
+                        AudioManager.Instance.PlaySFX(AudioManager.Instance.GameOver);
+                        gameObject.SetActive(false);
+
+                        Invoke("DeadPlayer", 1.5f);
                     }
                 }
+                else if (renderer.material.color == Color.green || renderer.material.color == Color.red || renderer.material.color == Color.blue)
+                {
+                    levelScore++;
+                    Debug.Log("Levelscore: " + levelScore);
+                    Destroy(other.gameObject);
+                    AudioManager.Instance.PlaySFX(AudioManager.Instance.BlasterShotTwo);
+                }
             }
+        }
+
+        private void DeadPlayer()
+        {
+            score += levelScore;
+            PlayerPrefs.SetInt("Score", score);
+
+            deadPlayer = true;
         }
     }
 }

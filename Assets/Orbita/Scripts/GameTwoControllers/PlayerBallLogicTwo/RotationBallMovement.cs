@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Scripts.GameTwo.PlayerBall
@@ -11,9 +12,17 @@ namespace Scripts.GameTwo.PlayerBall
         [SerializeField] private GameObject player;
         private float rotationSpeed = 0f;
 
+        [SerializeField] private GameObject spriteRendererIno;
+        private SpriteRenderer spriteRenderer;
+
+        private void Start()
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
         private void Update()
         {
-            Vector2 playerPosition = player.transform.position; 
+            Vector2 playerPosition = player.transform.position;
             MoveCircular(playerPosition);
 
             BallTap();
@@ -27,12 +36,13 @@ namespace Scripts.GameTwo.PlayerBall
 
                 if (touch.phase == TouchPhase.Began)
                 {
+                    AudioManager.Instance.PlaySFX(AudioManager.Instance.BlasterShotOne);
                     rotateClockwise = !rotateClockwise;
                 }
             }
             catch (System.Exception)
             {
-
+                // Handle exception (e.g., no touch input detected)
             }
         }
 

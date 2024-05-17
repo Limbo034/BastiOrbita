@@ -11,6 +11,9 @@ TagManager:
   - EnemyGreen
   - EnemyRed
   - EnemyBlue
+  - Metior
+  - Cookie
+  - Zona
   layers:
   - Default
   - TransparentFX

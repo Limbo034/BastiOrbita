@@ -10,11 +10,8 @@ EditorBuildSettings:
     guid: 4d50d5e09d5e3d043afa3a5b19ae9e7f
   - enabled: 1
     path: Assets/Orbita/Scenes/Game1.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    guid: ec2781def70d4714aa30daec7fac874a
   - enabled: 1
     path: Assets/Orbita/Scenes/Game2.unity
     guid: 3d3102839bd491144a37311cac1b9bbd
-  - enabled: 1
-    path: Assets/Orbita/Scenes/Game3.unity
-    guid: 1515c9cddea9a3e44a1f6d1d06a9ef6f
   m_configObjects: {}
