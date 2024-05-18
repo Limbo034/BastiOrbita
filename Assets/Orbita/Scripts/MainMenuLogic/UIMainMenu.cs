@@ -18,6 +18,19 @@ public class UIMainMenu : MonoBehaviour
     [SerializeField] Animator animationPlayer;
     private int currentPanelIndex = 0;
     [SerializeField] private bool sonnd = true;
+
+    [SerializeField] private GameObject yesButton;
+    [SerializeField] private GameObject noButtonClose;
+
+    [SerializeField] private GameObject infoButton;
+
+    [SerializeField] private GameObject[] skinPanels;
+    private int currentSkinPanelsIndex = 0;
+
+    private void Update()
+    {
+        animationPlayer.SetBool("isRun", true);
+    }
     public void LoadTo(int level)
     {
         SceneManager.LoadScene(level);
@@ -63,7 +76,6 @@ public class UIMainMenu : MonoBehaviour
     public void OpenOptionsPanel()
     {
         ToggleMenus(optionsMenu, mainMenu);
-        animationPlayer.SetBool("isRun", true);
     }
 
     public void CloseOptionsPanel()
@@ -106,9 +118,41 @@ public class UIMainMenu : MonoBehaviour
     }
     #endregion
 
+
+    public void PanelReset ()
+    {
+        ToggleMenus(yesButton, noButtonClose);
+    }
+    public void PaneExitReset()
+    {
+        ToggleMenus(noButtonClose, yesButton);
+    }
+
+    public void PaneInfo()
+    {
+        infoButton.SetActive(true);
+    }
     public void ResetPlayerPrefs()
     {
         PlayerPrefs.DeleteAll();
         Application.Quit();
+    }
+
+    public void SkinNextPanel()
+    {
+        skinPanels[currentSkinPanelsIndex].SetActive(false);
+
+        currentSkinPanelsIndex = (currentSkinPanelsIndex + 1) % skinPanels.Length;
+
+        skinPanels[currentSkinPanelsIndex].SetActive(true);
+    }
+
+    public void SkinPreviousPanel()
+    {
+        skinPanels[currentSkinPanelsIndex].SetActive(false);
+
+        currentSkinPanelsIndex = (currentSkinPanelsIndex - 1 + skinPanels.Length) % skinPanels.Length;
+
+        skinPanels[currentSkinPanelsIndex].SetActive(true);
     }
 }

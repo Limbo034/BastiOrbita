@@ -86,22 +86,19 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StartMusic()
-    {
-        if (!musicSource.isPlaying)
-        {
-            musicSource.Play();
-        }
-    }
-
-    public void StopMusic()
-    {
-        musicSource.Stop();
-    }
-
     public void SwitchToNextMusicTrack()
     {
         int nextIndex = (currentMusicIndex + 1) % MusicTracks.Length;
         PlayMusicTrack(nextIndex);
+    }
+
+    public void MuteAudio()
+    {
+        AudioListener.volume = 0f;
+    }
+
+    public void UnmuteAudio()
+    {
+        AudioListener.volume = 1f;
     }
 }
